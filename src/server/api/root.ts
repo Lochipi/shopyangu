@@ -1,8 +1,6 @@
-import {
-  createCallerFactory,
-  createTRPCRouter,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { productsRouters } from "./routers/products";
+import { shopsRouters } from "./routers/shops";
 
 /**
  * This is the primary router for your server.
@@ -10,7 +8,8 @@ import {
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  hello: publicProcedure.query(async () => "Hello world!"),
+  products: productsRouters,
+  shops: shopsRouters,
 });
 
 // export type definition of API
