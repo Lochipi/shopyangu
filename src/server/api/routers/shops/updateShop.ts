@@ -4,7 +4,7 @@ import { publicProcedure } from "../../trpc";
 export const updateShop = publicProcedure
   .input(
     z.object({
-      shopId: z.string(), // ID of the shop to update
+      shopId: z.string(),
       name: z.string().optional(),
       description: z.string().optional(),
       logo: z.string().url("Logo must be a valid URL").optional(),

@@ -1,7 +1,7 @@
 import { createTRPCRouter } from "../../trpc";
 import { createShop } from "./createNew";
 import { deleteShop } from "./deleteShop";
-import { shopsByIdRouter } from "./getProductById";
+import { shopsByIdRouter } from "./getShopsById";
 import { listShops } from "./listShops";
 import { updateShop } from "./updateShop";
 
