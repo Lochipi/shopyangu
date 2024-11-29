@@ -8,7 +8,7 @@ export const ShopCard = ({
   onDelete,
 }: {
   shop: { id: string; name: string; description: string; logo: string | null };
-  onEdit: () => void;
+  onEdit: (id: string) => void;
   onDelete: () => void;
 }) => (
   <div className="relative flex flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
@@ -30,7 +30,7 @@ export const ShopCard = ({
 
     <div className="mt-4 flex items-center space-x-4">
       <button
-        onClick={onEdit}
+        onClick={() => onEdit(shop.id)}
         className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200"
       >
         <FaEdit className="h-5 w-5" />

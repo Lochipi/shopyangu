@@ -1,13 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { api } from "~/trpc/react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import NewProductForm from "~/app/_components/products/NewProduct";
-import { Skeleton } from "@mantine/core";
+import { Skeleton, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import EditProductForm from "~/app/_components/products/EditProductForm"; // Import the EditProductForm
 
 const ShopPage = () => {
   const pathname = usePathname();
@@ -45,8 +46,12 @@ const ShopPage = () => {
     }
   };
 
+  const [editProductId, setEditProductId] = useState<string | null>(null); // For storing the product ID to edit
+  const [openModal, setOpenModal] = useState<boolean>(false); // To control the modal visibility
+
   const handleEditProduct = (productId: string) => {
-    console.log("Edit product", productId);
+    setEditProductId(productId);
+    setOpenModal(true); // Open the modal when editing
   };
 
   if (isLoading) {
@@ -157,6 +162,15 @@ const ShopPage = () => {
           <p className="text-gray-600">No products available in this shop.</p>
         )}
       </div>
+
+      {/* Modal for editing product */}
+      <Modal
+        opened={openModal}
+        onClose={() => setOpenModal(false)}
+        title="Edit Product"
+      >
+        {editProductId && <EditProductForm productId={editProductId} />}
+      </Modal>
     </div>
   );
 };

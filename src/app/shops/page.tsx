@@ -1,17 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import NewShopForm from "../_components/shops/newShop";
 import { api } from "~/trpc/react";
 import { ShopCard } from "../_components/shops/shopCard";
 import { notifications } from "@mantine/notifications";
-
-const handleEdit = () => {
-  console.log("Edit shop");
-};
+import EditShopForm from "../_components/shops/EditShopForm";
 
 const Page = () => {
   const [showForm, setShowForm] = useState(false);
+  const [editShopId, setEditShopId] = useState<string | null>(null);
 
   const {
     data: shopsList,
@@ -39,6 +36,11 @@ const Page = () => {
     }
   };
 
+  const handleEdit = (shopId: string) => {
+    setEditShopId(shopId);
+    setShowForm(true);
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 px-4 py-8">
       <div className="mx-auto mb-6 flex max-w-6xl items-center justify-between">
@@ -51,7 +53,7 @@ const Page = () => {
         </button>
       </div>
 
-      {showForm && (
+      {showForm && editShopId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
             <button
@@ -61,9 +63,9 @@ const Page = () => {
               ✕
             </button>
             <h3 className="mb-4 text-center text-xl font-semibold text-gray-800">
-              Create Shop
+              Edit Shop
             </h3>
-            <NewShopForm />
+            <EditShopForm shopId={editShopId} />
           </div>
         </div>
       )}
@@ -78,7 +80,7 @@ const Page = () => {
             <ShopCard
               key={shop.id}
               shop={shop}
-              onEdit={handleEdit}
+              onEdit={() => handleEdit(shop.id)}
               onDelete={() => handleDelete(shop.id)}
             />
           ))}
