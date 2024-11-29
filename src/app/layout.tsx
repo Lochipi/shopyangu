@@ -1,6 +1,11 @@
 import "@mantine/core/styles.css";
 import "~/styles/globals.css";
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+
+import { ourFileRouter } from "~/app/api/uploadthing/core";
+
 import { Inter } from "next/font/google";
 
 export const inter = Inter({
@@ -11,6 +16,7 @@ export const inter = Inter({
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import MainProvider from "./_components/providers/MainProvider";
+import Navbar from "./_components/Navbar";
 
 export const metadata: Metadata = {
   title: "Shop Yangu",
@@ -26,7 +32,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`}>
       <body>
         <MainProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+            <Navbar />
+            {children}
+          </TRPCReactProvider>
         </MainProvider>
       </body>
     </html>
