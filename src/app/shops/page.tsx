@@ -2,34 +2,45 @@
 
 import React, { useState } from "react";
 import NewShopForm from "../_components/shops/newShop";
-import Image from "next/image";
 import { api } from "~/trpc/react";
+import { ShopCard } from "../_components/shops/shopCard";
+import { notifications } from "@mantine/notifications";
 
-const ShopCard = ({
-  shop,
-}: {
-  shop: { name: string; description: string; logo: string | null };
-}) => (
-  <div className="flex flex-col items-center rounded-lg bg-white p-4 shadow-md">
-    <Image
-      src={shop.logo ?? "/shop.jpg"}
-      alt={`${shop.name} Logo`}
-      width={80}
-      height={80}
-      className="mb-4 h-20 w-20 rounded-full object-cover"
-    />
-    <h3 className="text-lg font-bold text-gray-800">{shop.name}</h3>
-    <p className="text-center text-gray-600">{shop.description}</p>
-  </div>
-);
+const handleEdit = () => {
+  console.log("Edit shop");
+};
 
 const Page = () => {
   const [showForm, setShowForm] = useState(false);
-  const { data: shopsList, isLoading } = api.shops.listShops.useQuery();
+
+  const {
+    data: shopsList,
+    isLoading,
+    refetch,
+  } = api.shops.listShops.useQuery();
+
+  const deleteMutation = api.shops.deleteShop.useMutation({
+    onSuccess: () => {
+      void refetch();
+    },
+    onError: (error) => {
+      notifications.show({
+        title: "Error",
+        message:
+          error.message || "Failed to delete shop, there are active products",
+        color: "red",
+      });
+    },
+  });
+
+  const handleDelete = (shopId: string) => {
+    if (confirm("Are you sure you want to delete this shop?")) {
+      deleteMutation.mutate({ shopId });
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 px-4 py-8">
-      {/* Header Section */}
       <div className="mx-auto mb-6 flex max-w-6xl items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Manage Your Shops</h1>
         <button
@@ -40,29 +51,39 @@ const Page = () => {
         </button>
       </div>
 
-      {/* Content Section */}
-      <div className="mx-auto max-w-6xl">
-        {/* Conditional Rendering for Form */}
-        {showForm && (
-          <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <button
+              onClick={() => setShowForm(false)}
+              className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
             <h3 className="mb-4 text-center text-xl font-semibold text-gray-800">
               Create Shop
             </h3>
             <NewShopForm />
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Loading State */}
+      <div className="mx-auto max-w-6xl">
         {isLoading && (
           <p className="text-center text-gray-600">Loading shops...</p>
         )}
 
-        {/* Shop List */}
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {shopsList?.map((shop) => <ShopCard key={shop.id} shop={shop} />)}
+          {shopsList?.map((shop) => (
+            <ShopCard
+              key={shop.id}
+              shop={shop}
+              onEdit={handleEdit}
+              onDelete={() => handleDelete(shop.id)}
+            />
+          ))}
         </div>
 
-        {/* Empty State */}
         {!isLoading && shopsList?.length === 0 && (
           <p className="mt-4 text-center text-gray-600">
             No shops found. Start by creating your first shop!

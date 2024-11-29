@@ -1,20 +1,19 @@
-"use client";
+'use client";';
 
-import React, { useState } from "react";
 import {
-  TextInput,
-  NumberInput,
-  Textarea,
   Button,
   Card,
-  Stack,
   Grid,
+  NumberInput,
+  Stack,
+  Textarea,
+  TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { UploadButton } from "~/utils/uploadthing";
-import { api } from "~/trpc/react";
 import { notifications } from "@mantine/notifications";
-import { usePathname } from "next/navigation";
+import { UploadButton } from "~/utils/uploadthing";
+import { useState } from "react";
+import { api } from "~/trpc/react";
 
 interface FormValues {
   name: string;
@@ -24,10 +23,12 @@ interface FormValues {
   image: string;
 }
 
-const NewProductForm: React.FC = () => {
-  const [imageURL, setImageURL] = useState<string>("");
+interface NewProductFormProps {
+  shopId: string;
+}
 
-  const shopId = usePathname();
+const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
+  const [imageURL, setImageURL] = useState<string>("");
 
   const productCreation = api.products.createProduct.useMutation({
     onSuccess: () => {
