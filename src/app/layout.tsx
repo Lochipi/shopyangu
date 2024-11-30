@@ -17,6 +17,8 @@ const inter = Inter({
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import MainProvider from "./_components/providers/MainProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Shop Yangu",
@@ -38,6 +40,17 @@ export default function RootLayout({
               <Navbar />
               <div className="ml-[80px]">{children}</div>
             </div>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </TRPCReactProvider>
         </MainProvider>
       </body>
