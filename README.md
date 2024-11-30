@@ -1,29 +1,147 @@
-# Create T3 App
+# ShopYangu Admin Panel
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Description
 
-## What's next? How do I make an app with this?
+ShopYangu is a growing e-commerce platform, and the Admin Panel is designed to help manage shops and products listed on the platform. This admin panel allows administrators to easily add, update, and delete shops and products, as well as track important metrics for platform performance.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Core Features
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+1. **Shop Management**:
 
-## Learn More
+   - **Create New Shop**: Add new shops with details like Shop Name, Description, and Logo.
+   - **Update Shop Details**: Edit existing shop details such as Shop Name, Description, and Logo.
+   - **Delete Shop**: Delete shops that have no products; if the shop has products, a warning will prevent deletion until products are removed or reassigned.
+   - **View Shop List**: View a list of shops, and perform actions such as updating or deleting them.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+2. **Product Management**:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+   - **Create New Product**: Add new products to shops with details like Product Name, Price, Stock Level, Description, and Image.
+   - **Update Product Details**: Modify product details, such as Price, Stock Level, and Description.
+   - **Delete Product**: Remove products from shops.
+   - **View Product List**: View a list of products with details such as Name, Price, Stock Level, and Image. The list is sortable, searchable, and paginated.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+3. **Search, Filter, and Pagination**:
+   - Search products by name.
+   - Filter products by Price, Stock Level, or Shop.
+   - Paginated product list for easier browsing.
 
-## How do I deploy this?
+### Bonus Features (Dashboard)
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. **Overview Metrics**:
+
+   - **Total Number of Shops**: The total number of active shops on the platform.
+   - **Total Number of Products**: The total number of products listed across all shops.
+   - **Total Value of Products in Shops**: Calculated based on product prices and stock levels.
+   - **Total Stock Level**: Total number of items in stock across all shops.
+
+2. **Product Stock Status**:
+
+   - **Stock Status Distribution**: A graph showing product distribution by stock status (In Stock, Low Stock, Out of Stock).
+   - **Top 5 Shops by Stock Level**: A list of the top 5 shops based on stock levels.
+
+3. **Real-Time Data Updates**:
+   - Dynamic updates when changes are made, such as adding new products or updating stock levels.
+
+### UI/UX Requirements
+
+- **Responsive Design**: The admin panel is fully responsive on both desktop and mobile devices.
+- **Intuitive Interface**: Simple and easy navigation to access shops, products, and metrics quickly.
+
+---
+
+## Tech Stack
+
+- **Frontend**: Next.js, Mantine (for components), Tailwind CSS (for styling).
+- **Backend**: API integrated using tRPC.
+- **Database**: Prisma with PostgreSQL on Supabase for serverless database handling.
+- **Image Handling**: UploadThing (for handling images in the S3 way).
+- **Form Handling**: Mantine Forms with Zod validation for form validation.
+- **State Management & Caching**: React Query.
+
+---
+
+## Setup Instructions
+
+To run the app locally, follow these steps:
+
+### Prerequisites
+
+- Node.js (preferably v16 or above)
+
+### Steps to Set Up
+
+1. **Clone the Repository**:
+
+   ```bash
+   // clone the repo
+   git clone https://github.com/lochipi/shopyangu
+   cd shopyangu
+
+   // install deps
+   npm install
+   ```
+
+2. Set Up Environment Variables: Create a .env.local file in the root directory and add the following environment variables (replace with your actual values):
+
+Please reach out to [me](corneliuslochipi@gmail.com) for secret variables.
+
+3. Run the Development Server:
+
+```bash
+npm run dev
+```
+
+4. Open your browser and visit `http://localhost:3000` to view the admin panel.
+
+## Testing the Admin Panel
+
+The admin panel provides several features that allow you to manage shops and products effectively. Here’s how to test its functionality:
+
+### 1. Shop Management
+
+- **Create New Shop**:  
+  Use the "create Shop" button to create a new shop. Ensure that the following fields are correctly populated:
+
+  - Shop Name
+  - Description
+  - Logo
+
+- **Update Shop**:  
+  Edit a shop’s details and verify that the changes are accurately reflected in the shop list.
+
+- **Delete Shop**:
+  - Attempt to delete a shop that has products and ensure that you are warned before proceeding.
+  - Delete a shop without products and confirm that it is successfully removed from the list.
+
+### 2. Product Management
+
+- **Create New Product**:  
+  Add a new product with the following details:
+
+  - Name
+  - Price
+  - Stock Level
+  - Image
+
+- **Update Product**:  
+  Modify product details, such as price, stock level, or description, and ensure the updates are reflected in the product list.
+
+- **Delete Product**:  
+  Remove a product and verify that it is successfully removed from the product list.
+
+### 3. Dashboard
+
+- **Check Metrics**:  
+  Review the dashboard metrics, including:
+
+  - Total number of shops
+  - Total number of products
+  - Total stock level
+  - Stock status distribution graph
+
+- **Dynamic Updates**:  
+  Ensure that metrics on the dashboard update dynamically when:
+  - Shops or products are added
+  - Shops or products are removed
