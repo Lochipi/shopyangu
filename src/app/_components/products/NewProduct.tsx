@@ -10,10 +10,10 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
 import { UploadButton } from "~/utils/uploadthing";
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import { toast } from "react-toastify";
 
 interface FormValues {
   name: string;
@@ -32,20 +32,14 @@ const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
 
   const productCreation = api.products.createProduct.useMutation({
     onSuccess: () => {
-      notifications.show({
-        title: "Success",
-        message: "Product created successfully",
-        color: "green",
+      toast.success("Product created successfully", {
         position: "top-right",
       });
-      form.reset(); // Clear the form
-      setImageURL(""); // Clear the uploaded image URL
+      form.reset();
+      setImageURL("");
     },
     onError: (error) => {
-      notifications.show({
-        title: "Error",
-        message: error.message || "Product creation failed",
-        color: "red",
+      toast.error(error.message || "Product creation failed", {
         position: "top-right",
       });
     },
@@ -130,18 +124,12 @@ const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
                   setImageURL(res[0]?.url ?? "");
-                  notifications.show({
-                    title: "Success",
-                    message: "Image uploaded successfully",
-                    color: "green",
+                  toast.success("Image uploaded successfully", {
                     position: "top-right",
                   });
                 }}
                 onUploadError={(error: Error) => {
-                  notifications.show({
-                    title: "Error",
-                    message: error.message || "Image upload failed",
-                    color: "red",
+                  toast.error(error.message || "Image upload failed", {
                     position: "top-right",
                   });
                 }}

@@ -17,7 +17,7 @@ import { FaEdit, FaTrashAlt, FaRedoAlt } from "react-icons/fa";
 import Image from "next/image";
 import NewProductForm from "~/app/_components/products/NewProduct";
 import EditProductForm from "~/app/_components/products/EditProductForm";
-import { notifications } from "@mantine/notifications";
+import { toast } from "react-toastify";
 
 const ShopPage = () => {
   const pathname = usePathname();
@@ -34,14 +34,10 @@ const ShopPage = () => {
   const deleteProductMutation = api.products.deleteProduct.useMutation({
     onSuccess: () => {
       void refetchProducts();
+      toast.success("Product deleted successfully!");
     },
     onError: (error) => {
-      notifications.show({
-        title: "Error",
-        message: error.message || "Failed to delete product",
-        color: "red",
-        position: "top-right",
-      });
+      toast.error(error.message || "Failed to delete product");
     },
   });
 

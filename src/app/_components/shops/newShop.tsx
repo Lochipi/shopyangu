@@ -5,7 +5,7 @@ import { TextInput, Textarea, Button, Card, Stack, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { UploadButton } from "~/utils/uploadthing";
 import { api } from "~/trpc/react";
-import { notifications } from "@mantine/notifications";
+import { toast } from "react-toastify";
 
 interface FormValues {
   name: string;
@@ -22,20 +22,24 @@ const NewShopForm = ({ refetchShops }: NewShopFormProps) => {
 
   const shopCreation = api.shops.createShop.useMutation({
     onSuccess: () => {
-      notifications.show({
-        title: "Success",
-        message: "Shop created successfully",
-        color: "green",
+      toast.success("Shop created successfully", {
         position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
       refetchShops();
     },
     onError: (error) => {
-      notifications.show({
-        title: "Error",
-        message: error.message || "Shop creation failed",
-        color: "red",
+      toast.error(error.message || "Shop creation failed", {
         position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
     },
   });
@@ -92,19 +96,23 @@ const NewShopForm = ({ refetchShops }: NewShopFormProps) => {
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
                   setLogoURL(res[0]?.url ?? "");
-                  notifications.show({
-                    title: "Success",
-                    message: "Logo uploaded successfully",
-                    color: "green",
+                  toast.success("Logo uploaded successfully", {
                     position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
                   });
                 }}
                 onUploadError={(error: Error) => {
-                  notifications.show({
-                    title: "Error",
-                    message: error.message || "Logo upload failed",
-                    color: "red",
+                  toast.error(error.message || "Logo upload failed", {
                     position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
                   });
                 }}
               />

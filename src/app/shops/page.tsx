@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
-import { ShopCard } from "../_components/shops/shopCard";
-import { notifications } from "@mantine/notifications";
+import { toast } from "react-toastify";
 import EditShopForm from "../_components/shops/EditShopForm";
 import NewShopForm from "../_components/shops/newShop";
+import { ShopCard } from "../_components/shops/ShopCard";
 
 const Page = () => {
   const [showForm, setShowForm] = useState(false);
@@ -20,15 +20,27 @@ const Page = () => {
   const deleteMutation = api.shops.deleteShop.useMutation({
     onSuccess: () => {
       void refetch();
+      toast.success("Shop deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     },
     onError: (error) => {
-      notifications.show({
-        title: "Error",
-        message:
-          error.message || "Failed to delete shop, there are active products",
-        color: "red",
-        position: "top-right",
-      });
+      toast.error(
+        error.message || "Failed to delete shop, there are active products",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        },
+      );
     },
   });
 

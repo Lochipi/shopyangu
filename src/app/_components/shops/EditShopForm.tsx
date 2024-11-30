@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { UploadButton } from "~/utils/uploadthing";
-import { notifications } from "@mantine/notifications";
 import Image from "next/image";
 import { FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface NewShopFormProps {
   shopId: string;
@@ -29,26 +29,17 @@ const EditShopForm = ({ shopId, onClose }: NewShopFormProps) => {
       setShopData(null);
       setLogoURL(null);
 
-      notifications.show({
-        title: "Success",
-        message: "Shop updated successfully",
-        color: "green",
+      toast.success("Shop updated successfully", {
         position: "top-right",
-        styles: {
-          root: { fontSize: "0.875rem" },
-        },
+        autoClose: 3000,
       });
+
       if (onClose) onClose();
     },
     onError: (error) => {
-      notifications.show({
-        title: "Error",
-        message: error.message || "Shop update failed",
-        color: "red",
+      toast.error(error.message || "Shop update failed", {
         position: "top-right",
-        styles: {
-          root: { fontSize: "0.875rem" },
-        },
+        autoClose: 3000,
       });
     },
   });
@@ -150,25 +141,15 @@ const EditShopForm = ({ shopId, onClose }: NewShopFormProps) => {
             endpoint="imageUploader"
             onClientUploadComplete={(res) => {
               setLogoURL(res[0]?.url ?? "");
-              notifications.show({
-                title: "Success",
-                message: "Logo uploaded successfully",
-                color: "green",
+              toast.success("Logo uploaded successfully", {
                 position: "top-right",
-                styles: {
-                  root: { fontSize: "0.875rem" },
-                },
+                autoClose: 3000,
               });
             }}
             onUploadError={(error: Error) => {
-              notifications.show({
-                title: "Error",
-                message: error.message || "Logo upload failed",
-                color: "red",
+              toast.error(error.message || "Logo upload failed", {
                 position: "top-right",
-                styles: {
-                  root: { fontSize: "0.875rem" },
-                },
+                autoClose: 3000,
               });
             }}
           />

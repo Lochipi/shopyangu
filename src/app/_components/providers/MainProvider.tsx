@@ -2,7 +2,6 @@
 
 import { MantineProvider } from "@mantine/core";
 import React, { type ReactNode } from "react";
-import { Notifications } from "@mantine/notifications";
 
 interface MainProviderProps {
   children: ReactNode;
@@ -43,7 +42,6 @@ const MainProvider = ({ children }: MainProviderProps) => {
       }}
     >
       {children}
-      <Notifications />
     </MantineProvider>
   );
 };
