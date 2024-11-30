@@ -145,3 +145,22 @@ The admin panel provides several features that allow you to manage shops and pro
   Ensure that metrics on the dashboard update dynamically when:
   - Shops or products are added
   - Shops or products are removed
+ 
+### snips
+
+##### Dashboard
+![image](https://github.com/user-attachments/assets/420cf607-ddd8-4603-bcce-aeae74c92edd)
+
+##### shops
+![image](https://github.com/user-attachments/assets/d47f0497-10e2-455c-9fcd-fb13ac2a2c55)
+
+##### individual shop
+![image](https://github.com/user-attachments/assets/4594b6dc-5c0b-499b-ac01-a41e072d299b)
+
+##### edit product
+![image](https://github.com/user-attachments/assets/0ff57b86-85c3-487e-bcd7-c3ec1ea3bdfe)
+
+##### new product
+![image](https://github.com/user-attachments/assets/e3b9aea3-6a48-4145-b719-ec53890004ee)
+
+####### enjoy managing your shops
