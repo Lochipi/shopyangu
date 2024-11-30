@@ -13,7 +13,11 @@ interface FormValues {
   logo: string;
 }
 
-const NewShopForm = () => {
+interface NewShopFormProps {
+  refetchShops: () => void;
+}
+
+const NewShopForm = ({ refetchShops }: NewShopFormProps) => {
   const [logoURL, setLogoURL] = React.useState<string>("");
 
   const shopCreation = api.shops.createShop.useMutation({
@@ -24,8 +28,7 @@ const NewShopForm = () => {
         color: "green",
         position: "top-right",
       });
-      form.reset();
-      setLogoURL("");
+      refetchShops();
     },
     onError: (error) => {
       notifications.show({
