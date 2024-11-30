@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
+import { Navbar } from "./_components/sidenav/Navbar";
 
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 
@@ -16,7 +17,6 @@ const inter = Inter({
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import MainProvider from "./_components/providers/MainProvider";
-import Navbar from "./_components/Navbar";
 
 export const metadata: Metadata = {
   title: "Shop Yangu",
@@ -34,8 +34,10 @@ export default function RootLayout({
         <MainProvider>
           <TRPCReactProvider>
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            <Navbar />
-            {children}
+            <div>
+              <Navbar />
+              <div className="ml-[80px]">{children}</div>
+            </div>
           </TRPCReactProvider>
         </MainProvider>
       </body>

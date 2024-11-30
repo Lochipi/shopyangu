@@ -1,0 +1,48 @@
+.navbar {
+  width: 80px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #1a1a1a;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.navbarMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.link:hover {
+  background-color: #333;
+}
+
+.link[data-active="true"] {
+  background-color: #444;
+}
+
+.active {
+  background-color: #444;
+}

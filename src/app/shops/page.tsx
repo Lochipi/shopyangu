@@ -44,7 +44,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 px-4 py-8">
+    <div className="flex min-h-screen flex-col px-4 py-8">
       <div className="mx-auto mb-6 flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Manage Your Shops</h1>
         <button
@@ -73,7 +73,7 @@ const Page = () => {
             {editShopId ? (
               <EditShopForm shopId={editShopId} />
             ) : (
-              <NewShopForm />
+              <NewShopForm refetchShops={refetch} />
             )}
           </div>
         </div>
@@ -84,7 +84,7 @@ const Page = () => {
           <p className="text-center text-gray-600">Loading shops...</p>
         )}
 
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {shopsList?.map((shop) => (
             <ShopCard
               key={shop.id}
