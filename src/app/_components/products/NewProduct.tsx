@@ -1,4 +1,4 @@
-'use client";';
+"use client";
 
 import {
   Button,
@@ -36,13 +36,17 @@ const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
         title: "Success",
         message: "Product created successfully",
         color: "green",
+        position: "top-right",
       });
+      form.reset(); // Clear the form
+      setImageURL(""); // Clear the uploaded image URL
     },
     onError: (error) => {
       notifications.show({
         title: "Error",
         message: error.message || "Product creation failed",
         color: "red",
+        position: "top-right",
       });
     },
   });
@@ -130,6 +134,7 @@ const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
                     title: "Success",
                     message: "Image uploaded successfully",
                     color: "green",
+                    position: "top-right",
                   });
                 }}
                 onUploadError={(error: Error) => {
@@ -137,6 +142,7 @@ const NewProductForm: React.FC<NewProductFormProps> = ({ shopId }) => {
                     title: "Error",
                     message: error.message || "Image upload failed",
                     color: "red",
+                    position: "top-right",
                   });
                 }}
               />

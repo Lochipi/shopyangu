@@ -13,7 +13,7 @@ interface FormValues {
   logo: string;
 }
 
-const NewShopForm: React.FC = () => {
+const NewShopForm = () => {
   const [logoURL, setLogoURL] = React.useState<string>("");
 
   const shopCreation = api.shops.createShop.useMutation({
@@ -22,13 +22,17 @@ const NewShopForm: React.FC = () => {
         title: "Success",
         message: "Shop created successfully",
         color: "green",
+        position: "top-right",
       });
+      form.reset();
+      setLogoURL("");
     },
     onError: (error) => {
       notifications.show({
         title: "Error",
         message: error.message || "Shop creation failed",
         color: "red",
+        position: "top-right",
       });
     },
   });
@@ -89,6 +93,7 @@ const NewShopForm: React.FC = () => {
                     title: "Success",
                     message: "Logo uploaded successfully",
                     color: "green",
+                    position: "top-right",
                   });
                 }}
                 onUploadError={(error: Error) => {
@@ -96,6 +101,7 @@ const NewShopForm: React.FC = () => {
                     title: "Error",
                     message: error.message || "Logo upload failed",
                     color: "red",
+                    position: "top-right",
                   });
                 }}
               />

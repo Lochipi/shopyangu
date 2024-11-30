@@ -1,31 +1,35 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
-import Image from "next/image";
+import { Form, useForm } from "@mantine/form";
+import {
+  TextInput,
+  NumberInput,
+  ActionIcon,
+  Button,
+  Modal,
+  Text,
+  Pagination,
+} from "@mantine/core";
 import { api } from "~/trpc/react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaRedoAlt } from "react-icons/fa";
+import Image from "next/image";
 import NewProductForm from "~/app/_components/products/NewProduct";
-import { Skeleton, Modal } from "@mantine/core";
+import EditProductForm from "~/app/_components/products/EditProductForm";
 import { notifications } from "@mantine/notifications";
-import EditProductForm from "~/app/_components/products/EditProductForm"; // Import the EditProductForm
 
 const ShopPage = () => {
   const pathname = usePathname();
   const id = pathname.split("/").pop();
-  console.log("id", id);
 
   const { data, isLoading, error } = api.shops.shopsByIdRouter.useQuery(
     { shopId: id ?? "" },
     { enabled: !!id },
   );
 
-  const {
-    data: products,
-    isLoading: loadingProducts,
-    error: productsError,
-    refetch: refetchProducts,
-  } = api.products.listProducts.useQuery({ shopId: id ?? "" });
+  const { data: products, refetch: refetchProducts } =
+    api.products.listProducts.useQuery({ shopId: id ?? "" });
 
   const deleteProductMutation = api.products.deleteProduct.useMutation({
     onSuccess: () => {
@@ -36,9 +40,39 @@ const ShopPage = () => {
         title: "Error",
         message: error.message || "Failed to delete product",
         color: "red",
+        position: "top-right",
       });
     },
   });
+
+  const [editProductId, setEditProductId] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const searchForm = useForm<{
+    productName?: string;
+    price?: number;
+  }>({});
+
+  useEffect(() => {
+    if (products) {
+      const filtered = products.filter((product) => {
+        const matchesName = searchForm.values.productName
+          ? product.name
+              .toLowerCase()
+              .includes(searchForm.values.productName.toLowerCase())
+          : true;
+        const matchesPrice = searchForm.values.price
+          ? product.price <= searchForm.values.price
+          : true;
+        return matchesName && matchesPrice;
+      });
+      setFilteredProducts(filtered);
+    }
+  }, [searchForm.values, products]);
 
   const handleDeleteProduct = (productId: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
@@ -46,13 +80,10 @@ const ShopPage = () => {
     }
   };
 
-  const [editProductId, setEditProductId] = useState<string | null>(null); // For storing the product ID to edit
-  const [openModal, setOpenModal] = useState<boolean>(false); // To control the modal visibility
-
-  const handleEditProduct = (productId: string) => {
-    setEditProductId(productId);
-    setOpenModal(true); // Open the modal when editing
-  };
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const paginatedProducts =
+    filteredProducts?.slice(indexOfFirstProduct, indexOfLastProduct) ?? [];
 
   if (isLoading) {
     return <p className="mt-10 text-center text-gray-600">Loading...</p>;
@@ -76,94 +107,123 @@ const ShopPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center text-center">
         <Image
           src={data.logo ?? "/shop.jpg"}
           alt={data.name || "Shop Image"}
-          width={300}
-          height={300}
-          className="mb-6 rounded-lg object-cover shadow-md"
+          width={200}
+          height={200}
+          className="mb-6 rounded-full object-cover shadow-md"
         />
-        <h1 className="mb-2 text-3xl font-bold text-gray-800">{data.name}</h1>
+        <Text
+          variant="gradient"
+          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+          className="mb-2 text-3xl font-bold"
+        >
+          {data.name}
+        </Text>
         <p className="mb-4 text-lg text-gray-600">{data.description}</p>
-        <p className="text-sm text-gray-500">
-          Created At: {new Date(data.createdAt).toLocaleDateString()}
-        </p>
       </div>
 
-      <div className="mt-10">
-        <h2 className="mb-4 text-2xl font-semibold text-gray-800">
-          Create a New Product
-        </h2>
-        <NewProductForm shopId={id ?? ""} />
+      <div className="mt-8 text-center">
+        <Button
+          onClick={() => setShowCreateForm((prev) => !prev)}
+          variant="gradient"
+          gradient={{ from: "teal", to: "lime", deg: 45 }}
+        >
+          {showCreateForm ? "Hide Create Form" : "Create New Product"}
+        </Button>
+        {showCreateForm && (
+          <div className="mt-6">
+            <NewProductForm shopId={id ?? ""} />
+          </div>
+        )}
       </div>
 
+      {/* Search and Reset */}
       <div className="mt-16">
         <h2 className="mb-4 text-2xl font-semibold text-gray-800">
           Products in Shop
         </h2>
-        {loadingProducts ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <Skeleton key={idx} height={300} className="rounded-lg" />
-            ))}
+        <Form form={searchForm}>
+          <div className="flex items-center gap-4">
+            <TextInput
+              {...searchForm.getInputProps("productName")}
+              label="Product Name"
+              placeholder="Search by name"
+              className="flex-1"
+            />
+            <NumberInput
+              {...searchForm.getInputProps("price")}
+              label="Max Price"
+              placeholder="Max Price"
+              className="flex-1"
+            />
+            <ActionIcon
+              onClick={() => searchForm.reset()}
+              variant="outline"
+              color="red"
+              size="lg"
+            >
+              <FaRedoAlt />
+            </ActionIcon>
           </div>
-        ) : productsError ? (
-          <p className="text-red-600">Failed to load products.</p>
-        ) : (products ?? []).length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products?.map((product) => (
-              <div
-                key={product.id}
-                className="relative rounded-lg border bg-white p-4 shadow-lg"
-              >
-                <Image
-                  src={product.image ?? "/shop.jpg"}
-                  alt={product.name}
-                  width={400}
-                  height={200}
-                  className="mb-4 w-full rounded-md object-cover"
-                />
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {product.name}
-                </h3>
-                <p className="my-2 text-sm text-gray-500">
-                  {product.description}
-                </p>
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="font-bold text-green-600">
-                    ${product.price.toFixed(2)}
-                  </span>
-                  <span className="text-sm text-blue-600">
-                    Stock: {product.stockLevel}
-                  </span>
-                </div>
-                <div className="absolute right-2 top-2 flex space-x-2">
-                  <button
-                    onClick={() => handleEditProduct(product.id)}
-                    className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200"
-                  >
-                    <FaEdit className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProduct(product.id)}
-                    className="rounded-full bg-red-100 p-2 text-red-600 hover:bg-red-200"
-                  >
-                    <FaTrashAlt className="h-5 w-5" />
-                  </button>
-                </div>
-                <button className="mt-4 w-full rounded-md bg-blue-600 py-2 text-white transition hover:bg-blue-700">
-                  View Product
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-600">No products available in this shop.</p>
-        )}
+        </Form>
       </div>
 
-      {/* Modal for editing product */}
+      {/* Product List */}
+      <div className="mt-8 space-y-4">
+        {paginatedProducts.map((product) => (
+          <div
+            key={product.id}
+            className="flex items-center rounded-lg border bg-white p-4 shadow-lg"
+          >
+            <Image
+              src={product.image ?? "/shop.jpg"}
+              alt={product.name}
+              width={100}
+              height={100}
+              className="rounded-md object-cover"
+            />
+            <div className="ml-4 flex-1">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {product.name}
+              </h3>
+              <p className="text-sm text-gray-500">{product.description}</p>
+              <div className="mt-2 font-bold text-green-600">
+                ${product.price.toFixed(2)}
+              </div>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <button
+                onClick={() => {
+                  setEditProductId(product.id);
+                  setOpenModal(true);
+                }}
+                className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200"
+              >
+                <FaEdit />
+              </button>
+              <button
+                onClick={() => handleDeleteProduct(product.id)}
+                className="rounded-full bg-red-100 p-2 text-red-600 hover:bg-red-200"
+              >
+                <FaTrashAlt />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-8 flex justify-center">
+        <Pagination
+          value={currentPage}
+          onChange={setCurrentPage}
+          total={Math.ceil((filteredProducts?.length ?? 0) / itemsPerPage)}
+        />
+      </div>
+
       <Modal
         opened={openModal}
         onClose={() => setOpenModal(false)}

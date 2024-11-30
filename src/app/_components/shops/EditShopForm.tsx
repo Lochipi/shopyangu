@@ -26,10 +26,18 @@ const EditShopForm = ({ shopId }: NewShopFormProps) => {
 
   const updateShop = api.shops.updateShop.useMutation({
     onSuccess: () => {
+      // Clear the form after success
+      setShopData(null);
+      setLogoURL(null);
+
       notifications.show({
         title: "Success",
         message: "Shop updated successfully",
         color: "green",
+        position: "top-right",
+        styles: {
+          root: { fontSize: "0.875rem" },
+        },
       });
     },
     onError: (error) => {
@@ -37,6 +45,10 @@ const EditShopForm = ({ shopId }: NewShopFormProps) => {
         title: "Error",
         message: error.message || "Shop update failed",
         color: "red",
+        position: "top-right",
+        styles: {
+          root: { fontSize: "0.875rem" },
+        },
       });
     },
   });
@@ -129,6 +141,10 @@ const EditShopForm = ({ shopId }: NewShopFormProps) => {
               title: "Success",
               message: "Logo uploaded successfully",
               color: "green",
+              position: "top-right",
+              styles: {
+                root: { fontSize: "0.875rem" },
+              },
             });
           }}
           onUploadError={(error: Error) => {
@@ -136,6 +152,10 @@ const EditShopForm = ({ shopId }: NewShopFormProps) => {
               title: "Error",
               message: error.message || "Logo upload failed",
               color: "red",
+              position: "top-right",
+              styles: {
+                root: { fontSize: "0.875rem" },
+              },
             });
           }}
         />

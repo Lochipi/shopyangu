@@ -21,6 +21,7 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
 
   const [productData, setProductData] = useState<ProductData | null>(null);
   const [imageURL, setImageURL] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { data, isLoading, isError } = api.products.productsByIdRouter.useQuery(
     {
@@ -30,17 +31,29 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
 
   const updateProduct = api.products.updateProduct.useMutation({
     onSuccess: () => {
+      setIsSaving(false);
       notifications.show({
         title: "Success",
         message: "Product updated successfully",
         color: "green",
+        position: "top-right",
+        autoClose: 3000,
       });
+
+      // Reset form to the updated product data
+      if (data) {
+        setProductData(data);
+        setImageURL(data.image);
+      }
     },
     onError: (error) => {
+      setIsSaving(false);
       notifications.show({
         title: "Error",
         message: error.message || "Product update failed",
         color: "red",
+        position: "top-right",
+        autoClose: 3000,
       });
     },
   });
@@ -62,8 +75,8 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSaving(true);
 
-    // Call the mutation to update the product
     updateProduct.mutate({
       productId,
       name: productData?.name,
@@ -191,6 +204,8 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
               title: "Success",
               message: "Image uploaded successfully",
               color: "green",
+              position: "top-right",
+              autoClose: 3000,
             });
           }}
           onUploadError={(error: Error) => {
@@ -198,6 +213,8 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
               title: "Error",
               message: error.message || "Image upload failed",
               color: "red",
+              position: "top-right",
+              autoClose: 3000,
             });
           }}
         />
@@ -216,9 +233,12 @@ const EditProductForm = ({ productId }: EditProductFormProps) => {
 
       <button
         type="submit"
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md transition hover:bg-blue-700"
+        disabled={isSaving}
+        className={`w-full rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md transition ${
+          isSaving ? "cursor-not-allowed opacity-50" : "hover:bg-blue-700"
+        }`}
       >
-        Save Changes
+        {isSaving ? "Saving..." : "Save Changes"}
       </button>
     </form>
   );
