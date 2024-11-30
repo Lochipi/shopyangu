@@ -1,4 +1,5 @@
 import { createTRPCRouter } from "../../trpc";
+import { getDashboardMetrics } from "./counts";
 import { createShop } from "./createNew";
 import { deleteShop } from "./deleteShop";
 import { shopsByIdRouter } from "./getShopsById";
@@ -11,4 +12,5 @@ export const shopsRouters = createTRPCRouter({
   updateShop,
   listShops,
   shopsByIdRouter,
+  getDashboardMetrics,
 });
