@@ -8,7 +8,7 @@ import { ourFileRouter } from "~/app/api/uploadthing/core";
 
 import { Inter } from "next/font/google";
 
-export const inter = Inter({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
